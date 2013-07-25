@@ -24,6 +24,10 @@ var accelData = function(options){
 				_this.accelStartWatch(_this.options.frequency);
 			});
 			
+			_this.socketInstance.on('update accel data',function(data){
+				$('#accel-direction').empty().append(data.coordinateData);
+			});
+			
 		} else {
 			_this.accelStartWatch(_this.options.frequency);
 		}	
@@ -60,10 +64,12 @@ var accelData = function(options){
 		$('.z-coordinate').html(acceleration.z);
 		
 		//send data to the server via the socket
-		_this.socketInstance.emit('accel data',{
-			posX:acceleration.x,
-			posY:acceleration.y,
-			posZ:acceleration.z});
+		if(_this.socketInstance !== null){
+			_this.socketInstance.emit('accel data',{
+				posX:acceleration.x,
+				posY:acceleration.y,
+				posZ:acceleration.z});
+		}
 	};
 	
 	this.accelError = function(){
@@ -80,10 +86,29 @@ var accelData = function(options){
 //
 document.addEventListener("deviceready", onDeviceReady, false);
 
+//Function to enable stop and clear only if start is clicked
+function enableStopClear(){
+	$('#stop-accel').attr('disabled',false).removeClass('disabled');
+	//Disable the start and back functionality
+	$('#start-accel').attr('disabled',true).addClass('disabled');
+	$('#back-accel').attr('disabled',true).addClass('disabled');
+}
+
+//Function to disable stop and clear until start is clicked
+function disableStopClear(){
+	$('#stop-accel').attr('disabled',true).addClass('disabled');
+	//Enable the start and back functionality
+	$('#start-accel').attr('disabled',false).removeClass('disabled');
+	$('#back-accel').attr('disabled',false).removeClass('disabled');
+}
+
 //device APIs are available
 //
 function onDeviceReady() {
 	
+		//Flag to check the disconnect function later
+		var socketCreated = false;
+		
 		$('#ip-setup-form-submit').bind('click',function(e){
 			var ip   = $('#ip-address').val();
 			var port = $('#ip-port').val();
@@ -91,8 +116,10 @@ function onDeviceReady() {
 
 			$('#accel-setup').fadeOut('fast',function(){
 				$('#accel-streamer').fadeIn('fast',function(){
-					//Initializations go here.
-
+					//Disable unnecessary functionality
+					disableStopClear();
+					
+					//Initializations go here
 					var accel = new accelData({
 						ipAddress : ip,
 						port: port,
@@ -102,10 +129,13 @@ function onDeviceReady() {
 
 					$('#start-accel').bind('click',function(){
 						accel.accelConnect();
+						enableStopClear();
+						socketCreated = true;
 					});
 
 					$('#stop-accel').bind('click',function(){
 						accel.accelStopWatch();
+						disableStopClear();
 					});
 
 					$('#clear-accel').bind('click',function(){
@@ -114,12 +144,16 @@ function onDeviceReady() {
 
 					$('#back-accel').bind('click',function(){
 						accel.accelStopWatch();
-						accel.accelDisconnect();
+						
+						if(socketCreated)
+							accel.accelDisconnect();
+						
 						accel.socketInstance = null;
+						
 						accel.accelClearData();
+						
 						$('#accel-streamer').fadeOut('fast',function(){
-							$('#ip-address').val('');
-							$('#ip-port').val('');
+							$('#accel-direction').empty();
 							$('#accel-setup').fadeIn('fast');
 						});
 					});
