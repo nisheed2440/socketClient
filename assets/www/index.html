@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.min.css" />
+        <title>Socket Program</title>
+        <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+        <script type="text/javascript" src="js/cordova-2.7.0.js"></script>
+        <script type="text/javascript" src="js/phonegap-websocket.js"></script>
+        <script type="text/javascript" src="js/socket.io.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </head>
+    <body>
+        <div id="accel-setup" class="container-fluid">
+        	<div class="row-fluid">
+        		<div class="span12">
+        			<h2>Connection Setup</h2>
+        		</div>
+        	</div>
+        	<div class="row-fluid">
+			<div class="span12">
+				<form id="ip-setup-form">
+					<fieldset>
+						<legend>Setup Data</legend>
+						
+						<div class="well span8 offset2">
+							<label>IP Address:</label> 
+							<input id="ip-address" type="text" placeholder="127.0.0.1"> 
+							<span class="help-block">Enter the IP of the machine running the node server.</span> 
+							
+							<label>Port Number:</label> 
+							<input id="ip-port" type="text" placeholder="8080"> 
+							<span class="help-block">Enter node server port.</span> 
+							
+							<label class="checkbox"> 
+								<input id="ip-ssl" type="checkbox"> Is SSL (https) ?
+							</label>
+						</div>
+						<button id="ip-setup-form-submit" type="button" class="btn btn-block btn-primary">Submit</button>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+        </div>	
+        <div id="accel-streamer" class="container-fluid" style="display:none;">
+        	<div class="row-fluid">
+        		<div class="span12">
+        			<h2>Accelerometer Streamer</h2>
+        		</div>
+        	</div>
+  			<div class="row-fluid">
+  				<div class="alert alert-success span4">
+  					<strong>X:</strong>
+  					<span id="x-coordinate" class="x-coordinate"></span>
+  				</div>
+  				<div class="alert alert-info span4">
+  					<strong>Y:</strong>
+  					<span id="y-coordinate"  class="y-coordinate"></span>
+  				</div>
+  				<div class="alert alert-error span4">
+  					<strong>Z:</strong>
+  					<span id="z-coordinate"  class="z-coordinate"></span>
+  				</div>
+  			</div>
+  			<div class="row-fluid">
+  				<div class="well">
+					<button id="start-accel" class="btn btn-large btn-block btn-success" type="button">START</button>
+					<button id="stop-accel" class="btn btn-large btn-block btn-danger" type="button">STOP</button>
+					<button id="clear-accel" class="btn btn-large btn-block" type="button">CLEAR</button><br>
+					<button id="back-accel" class="btn btn-large btn-block" type="button">BACK</button>
+				</div>
+			</div>
+        </div>
+    </body>
+</html>
