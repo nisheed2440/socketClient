@@ -24,8 +24,8 @@ var accelData = function(options){
 				_this.accelStartWatch(_this.options.frequency);
 			});
 			
-			_this.socketInstance.on('update accel data',function(data){
-				$('#accel-direction').empty().append(data.coordinateData);
+			_this.socketInstance.on('update accel data',function(data){		
+				clearClasses('direction ' + data.coordinateData,'accel-direction');
 			});
 			
 		} else {
@@ -102,6 +102,20 @@ function disableStopClear(){
 	$('#back-accel').attr('disabled',false).removeClass('disabled');
 }
 
+//function to clear all classes setting a default
+function clearClasses(clsName,elId){
+	
+	clsName = clsName || '';
+	
+	if(elId === null){
+		return;
+	}
+	
+	$('#' + elId).removeClass();
+	$('#' + elId).addClass(clsName);
+	return ;
+}
+
 //device APIs are available
 //
 function onDeviceReady() {
@@ -136,10 +150,12 @@ function onDeviceReady() {
 					$('#stop-accel').bind('click',function(){
 						accel.accelStopWatch();
 						disableStopClear();
+						clearClasses('direction','accel-direction');
 					});
 
 					$('#clear-accel').bind('click',function(){
 						accel.accelClearData();
+						clearClasses('direction','accel-direction');
 					});
 
 					$('#back-accel').bind('click',function(){
@@ -153,7 +169,7 @@ function onDeviceReady() {
 						accel.accelClearData();
 						
 						$('#accel-streamer').fadeOut('fast',function(){
-							$('#accel-direction').empty();
+							clearClasses('direction','accel-direction');
 							$('#accel-setup').fadeIn('fast');
 						});
 					});
